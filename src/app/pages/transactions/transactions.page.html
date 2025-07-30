@@ -1,156 +1,73 @@
-<ion-header [translucent]="true">
-  <ion-toolbar color="primary" class="custom-header">
-    <ion-title class="header-title">
-      <div class="shop-branding">
-        <div class="logo-circle">🧾</div>
-        <div class="shop-info">
-          <h1>Daily Transactions</h1>
-          <p>Track sales & purchases</p>
-        </div>
-      </div>
-    </ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Transactions</ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="clear" (click)="refreshData()">
-        <ion-icon name="refresh" slot="icon-only"></ion-icon>
+      <ion-button (click)="addTransaction()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+      <ion-button routerLink="/home" fill="clear">
+        <ion-icon name="home" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="main-content">
-  <!-- Quick Stats -->
-  <div class="stats-bar">
-    <div class="stat-item">
-      <ion-icon name="trending-up-outline"></ion-icon>
-      <span>₹{{todaySales}}</span>
-    </div>
-    <div class="stat-item">
-      <ion-icon name="trending-down-outline"></ion-icon>
-      <span>₹{{todayPurchases}}</span>
-    </div>
-    <div class="stat-item">
+<ion-content class="transactions-content">
+  <div class="transactions-header">
+    <h2>Transaction History</h2>
+    <p>Track all your business transactions</p>
+  </div>
+
+  <div class="filter-section">
+    <ion-item lines="none">
+      <ion-label>Filter by Vendor</ion-label>
+      <ion-select [(ngModel)]="selectedVendorId" (ionChange)="filterTransactions()" placeholder="All Vendors">
+        <ion-select-option value="">All Vendors</ion-select-option>
+        <ion-select-option *ngFor="let vendor of vendors" [value]="vendor.id">
+          {{vendor.name}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </div>
+
+  <div class="transactions-list" *ngIf="filteredTransactions.length > 0; else noTransactions">
+    <ion-card class="transaction-card" *ngFor="let transaction of filteredTransactions">
+      <ion-card-content>
+        <div class="transaction-header">
+          <div class="transaction-info">
+            <h3>{{getVendorName(transaction.vendorId)}}</h3>
+            <p class="transaction-date">{{transaction.date | date:'MMM dd, yyyy • HH:mm'}}</p>
+          </div>
+          <div class="transaction-amount" [class]="transaction.type">
+            <span class="amount">₹{{transaction.amount | number:'1.0-0'}}</span>
+            <span class="type">{{transaction.type | uppercase}}</span>
+          </div>
+        </div>
+        <div class="transaction-details">
+          <p class="description">{{transaction.description}}</p>
+          <p class="notes" *ngIf="transaction.notes">{{transaction.notes}}</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <ng-template #noTransactions>
+    <div class="empty-state">
       <ion-icon name="receipt-outline"></ion-icon>
-      <span>{{totalTransactions}}</span>
+      <h3>No transactions</h3>
+      <p>Start by adding your first transaction</p>
+      <ion-button (click)="addTransaction()" color="primary">
+        <ion-icon name="add" slot="start"></ion-icon>
+        Add Transaction
+      </ion-button>
     </div>
-    <div class="stat-item">
-      <ion-icon name="cash-outline"></ion-icon>
-      <span>₹{{netAmount}}</span>
-    </div>
-  </div>
-
-  <!-- Main Action Cards -->
-  <div class="action-grid">
-    <div class="action-card primary" (click)="recordSale()">
-      <div class="card-icon">
-        <ion-icon name="trending-up"></ion-icon>
-      </div>
-      <div class="card-content">
-        <h3>Record Sale</h3>
-        <p>Add new sales transaction</p>
-      </div>
-      <div class="card-arrow">
-        <ion-icon name="chevron-forward"></ion-icon>
-      </div>
-    </div>
-
-    <div class="action-card success" (click)="recordPurchase()">
-      <div class="card-icon">
-        <ion-icon name="trending-down"></ion-icon>
-      </div>
-      <div class="card-content">
-        <h3>Record Purchase</h3>
-        <p>Add purchase from vendor</p>
-      </div>
-      <div class="card-arrow">
-        <ion-icon name="chevron-forward"></ion-icon>
-      </div>
-    </div>
-
-    <div class="action-card warning" (click)="recordCredit()">
-      <div class="card-icon">
-        <ion-icon name="card"></ion-icon>
-      </div>
-      <div class="card-content">
-        <h3>Credit Transaction</h3>
-        <p>Record credit given/received</p>
-      </div>
-      <div class="card-arrow">
-        <ion-icon name="chevron-forward"></ion-icon>
-      </div>
-    </div>
-
-    <div class="action-card danger" (click)="recordPayment()">
-      <div class="card-icon">
-        <ion-icon name="cash"></ion-icon>
-      </div>
-      <div class="card-content">
-        <h3>Payment</h3>
-        <p>Record payment made/received</p>
-      </div>
-      <div class="card-arrow">
-        <ion-icon name="chevron-forward"></ion-icon>
-      </div>
-    </div>
-  </div>
-
-  <!-- Transaction Stats -->
-  <div class="stats-grid">
-    <ion-card class="stats-card">
-      <ion-card-content>
-        <div class="stat-header">
-          <ion-icon name="trending-up" color="success"></ion-icon>
-          <h3>Today's Sales</h3>
-        </div>
-        <div class="stat-value">₹{{todaySales}}</div>
-      </ion-card-content>
-    </ion-card>
-    
-    <ion-card class="stats-card">
-      <ion-card-content>
-        <div class="stat-header">
-          <ion-icon name="trending-down" color="primary"></ion-icon>
-          <h3>Purchases</h3>
-        </div>
-        <div class="stat-value">₹{{todayPurchases}}</div>
-      </ion-card-content>
-    </ion-card>
-    
-    <ion-card class="stats-card">
-      <ion-card-content>
-        <div class="stat-header">
-          <ion-icon name="card" color="warning"></ion-icon>
-          <h3>Credit Given</h3>
-        </div>
-        <div class="stat-value">₹{{creditGiven}}</div>
-      </ion-card-content>
-    </ion-card>
-    
-    <ion-card class="stats-card">
-      <ion-card-content>
-        <div class="stat-header">
-          <ion-icon name="cash" color="secondary"></ion-icon>
-          <h3>Payments</h3>
-        </div>
-        <div class="stat-value">₹{{paymentsReceived}}</div>
-      </ion-card-content>
-    </ion-card>
-  </div>
-
-  <!-- Recent Transactions -->
-  <ion-card class="modern-card">
-    <ion-card-header>
-      <ion-card-title>📊 Recent Transactions</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <div class="no-data">
-        <ion-icon name="receipt-outline"></ion-icon>
-        <p>No transactions recorded today. Start by recording your first transaction!</p>
-      </div>
-    </ion-card-content>
-  </ion-card>
+  </ng-template>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="showTransactionOptions()">
+    <ion-fab-button (click)="addTransaction()" color="primary">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

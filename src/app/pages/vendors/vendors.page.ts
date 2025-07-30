@@ -11,13 +11,6 @@ import { Vendor } from '../../models/inventory.model';
 })
 export class VendorsPage implements OnInit {
   vendors: Vendor[] = [];
-  filteredVendors: Vendor[] = [];
-  searchTerm = '';
-  totalVendors = 0;
-  totalOwed = 0;
-  totalDue = 0;
-  settledVendors = 0;
-  Math = Math;
 
   constructor(
     private router: Router,
@@ -32,70 +25,31 @@ export class VendorsPage implements OnInit {
   loadVendors() {
     this.gmbTransactionService.getVendors().subscribe(vendors => {
       this.vendors = vendors;
-      this.updateStats();
-      this.filterVendors();
     });
-  }
-
-  updateStats() {
-    this.totalVendors = this.vendors.length;
-    this.totalOwed = this.vendors.filter(v => v.balance > 0).reduce((sum, v) => sum + v.balance, 0);
-    this.totalDue = Math.abs(this.vendors.filter(v => v.balance < 0).reduce((sum, v) => sum + v.balance, 0));
-    this.settledVendors = this.vendors.filter(v => v.balance === 0).length;
-  }
-
-  filterVendors() {
-    if (!this.searchTerm) {
-      this.filteredVendors = this.vendors;
-    } else {
-      this.filteredVendors = this.vendors.filter(vendor =>
-        vendor.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        vendor.contact.includes(this.searchTerm) ||
-        vendor.address.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    }
   }
 
   async addVendor() {
     const alert = await this.alertController.create({
-      header: 'Add New Vendor',
+      header: 'Add Vendor',
       inputs: [
-        {
-          name: 'name',
-          type: 'text',
-          placeholder: 'Vendor Name',
-          attributes: { required: true }
-        },
-        {
-          name: 'contact',
-          type: 'text',
-          placeholder: 'Contact Number'
-        },
-        {
-          name: 'address',
-          type: 'text',
-          placeholder: 'Address'
-        }
+        { name: 'name', type: 'text' as const, placeholder: 'Vendor Name' },
+        { name: 'contact', type: 'text' as const, placeholder: 'Contact Number' },
+        { name: 'address', type: 'text' as const, placeholder: 'Address' }
       ],
       buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
+        { text: 'Cancel', role: 'cancel' },
         {
           text: 'Add',
           handler: async (data) => {
-            if (data.name && data.name.trim()) {
+            if (data.name) {
               const vendor = new Vendor(
                 this.gmbTransactionService.generateId(),
-                data.name.trim(),
+                data.name,
                 data.contact || '',
                 data.address || ''
               );
               await this.gmbTransactionService.addVendor(vendor);
-              return true;
             }
-            return false;
           }
         }
       ]
@@ -103,34 +57,67 @@ export class VendorsPage implements OnInit {
     await alert.present();
   }
 
-  viewVendor(vendorId: string) {
-    this.router.navigate(['/vendor', vendorId]);
-  }
-
-  async viewActiveVendors() {
+  async editVendor(vendor: Vendor) {
     const alert = await this.alertController.create({
-      header: 'Active Vendors',
-      message: 'View all vendors with ongoing transactions and active relationships.',
-      buttons: ['OK']
+      header: 'Edit Vendor',
+      inputs: [
+        { name: 'name', type: 'text' as const, placeholder: 'Vendor Name', value: vendor.name },
+        { name: 'contact', type: 'text' as const, placeholder: 'Contact Number', value: vendor.contact },
+        { name: 'address', type: 'text' as const, placeholder: 'Address', value: vendor.address }
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Update',
+          handler: async (data) => {
+            if (data.name) {
+              await this.gmbTransactionService.updateVendor(vendor.id, {
+                name: data.name,
+                contact: data.contact || '',
+                address: data.address || ''
+              });
+            }
+          }
+        }
+      ]
     });
     await alert.present();
   }
 
-  async viewPendingPayments() {
+  async deleteVendor(vendor: Vendor) {
     const alert = await this.alertController.create({
-      header: 'Pending Payments',
-      message: 'Review all outstanding payments and balances with vendors.',
-      buttons: ['OK']
+      header: 'Delete Vendor',
+      message: `Delete ${vendor.name}?`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete',
+          handler: async () => {
+            await this.gmbTransactionService.deleteVendor(vendor.id);
+          }
+        }
+      ]
     });
     await alert.present();
   }
 
-  async bulkActions() {
-    const alert = await this.alertController.create({
-      header: 'Bulk Actions',
-      message: 'Perform bulk operations like export data, send reminders, or update multiple vendors.',
-      buttons: ['OK']
-    });
-    await alert.present();
+  viewVendor(vendor: Vendor) {
+    this.router.navigate(['/vendor', vendor.id]);
+  }
+
+  getBalanceClass(balance: number): string {
+    if (balance > 0) return 'positive';
+    if (balance < 0) return 'negative';
+    return 'zero';
+  }
+
+  getBalanceStatus(balance: number): string {
+    if (balance > 0) return 'You owe';
+    if (balance < 0) return 'They owe';
+    return 'Settled';
+  }
+
+  goHome() {
+    this.router.navigate(['/home']);
   }
 }

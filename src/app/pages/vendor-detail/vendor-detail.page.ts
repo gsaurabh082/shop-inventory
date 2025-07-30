@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { GMBTransactionService } from '../../services/gmb-transaction.service';
-import { Vendor, Transaction, VendorReport } from '../../models/inventory.model';
+import { Vendor, Transaction } from '../../models/inventory.model';
 
 @Component({
   selector: 'app-vendor-detail',
@@ -12,9 +12,7 @@ import { Vendor, Transaction, VendorReport } from '../../models/inventory.model'
 export class VendorDetailPage implements OnInit {
   vendor: Vendor | null = null;
   transactions: Transaction[] = [];
-  vendorReport: VendorReport | null = null;
   vendorId: string = '';
-  Math = Math;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,15 +23,12 @@ export class VendorDetailPage implements OnInit {
 
   ngOnInit() {
     this.vendorId = this.route.snapshot.paramMap.get('id') || '';
-    this.loadVendorData();
+    this.loadData();
   }
 
-  loadVendorData() {
+  loadData() {
     this.gmbTransactionService.getVendors().subscribe(vendors => {
       this.vendor = vendors.find(v => v.id === this.vendorId) || null;
-      if (this.vendor) {
-        this.vendorReport = this.gmbTransactionService.getVendorReport(this.vendorId);
-      }
     });
 
     this.gmbTransactionService.getTransactions().subscribe(transactions => {
@@ -43,58 +38,243 @@ export class VendorDetailPage implements OnInit {
     });
   }
 
-  async addTransaction() {
+  addTransaction() {
+    this.router.navigate(['/add-transaction'], {
+      queryParams: { vendorId: this.vendorId }
+    });
+  }
+
+  async addTransactionOld() {
+    const today = new Date().toISOString().split('T')[0];
+    
     const alert = await this.alertController.create({
       header: `Add Transaction - ${this.vendor?.name}`,
+      message: 'Enter transaction details',
       inputs: [
         {
           name: 'amount',
-          type: 'number',
-          placeholder: 'Amount',
-          attributes: { required: true }
+          type: 'number' as const,
+          placeholder: 'Amount (₹)',
+          attributes: { min: 0.01, step: 0.01 }
         },
         {
           name: 'description',
-          type: 'text',
-          placeholder: 'Description',
-          attributes: { required: true }
+          type: 'text' as const,
+          placeholder: 'Description (e.g., Payment for goods)'
+        },
+        {
+          name: 'date',
+          type: 'date' as const,
+          value: today
         },
         {
           name: 'notes',
-          type: 'text',
-          placeholder: 'Notes (optional)'
+          type: 'textarea' as const,
+          placeholder: 'Additional notes (optional)'
         },
         {
           name: 'type',
-          type: 'radio',
-          label: 'Debit (You gave)',
-          value: 'debit',
+          type: 'radio' as const,
+          label: '💰 Credit - You received money',
+          value: 'credit',
           checked: true
         },
         {
           name: 'type',
-          type: 'radio',
-          label: 'Credit (You received)',
-          value: 'credit',
-          checked: false
+          type: 'radio' as const,
+          label: '💸 Debit - You gave money',
+          value: 'debit'
         }
       ],
       buttons: [
+        { text: 'Cancel', role: 'cancel' },
         {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Add',
+          text: 'Add Transaction',
           handler: async (data) => {
             if (data.amount && data.description && data.type) {
+              const transactionDate = data.date ? new Date(data.date) : new Date();
               const transaction = new Transaction(
                 this.gmbTransactionService.generateId(),
                 this.vendorId,
                 data.type,
                 parseFloat(data.amount),
                 data.description,
-                data.notes
+                data.notes || '',
+                transactionDate
+              );
+              await this.gmbTransactionService.addTransaction(transaction);
+              
+              const successAlert = await this.alertController.create({
+                header: 'Success',
+                message: 'Transaction added successfully!',
+                buttons: ['OK']
+              });
+              await successAlert.present();
+              return true;
+            } else {
+              const errorAlert = await this.alertController.create({
+                header: 'Error',
+                message: 'Please fill in all required fields',
+                buttons: ['OK']
+              });
+              await errorAlert.present();
+              return false;
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async editTransaction(transaction: Transaction) {
+    const transactionDate = new Date(transaction.date).toISOString().split('T')[0];
+    
+    const alert = await this.alertController.create({
+      header: 'Edit Transaction',
+      message: 'Update transaction details',
+      inputs: [
+        {
+          name: 'amount',
+          type: 'number' as const,
+          placeholder: 'Amount',
+          value: transaction.amount.toString(),
+          attributes: { min: 0.01, step: 0.01 }
+        },
+        {
+          name: 'description',
+          type: 'text' as const,
+          placeholder: 'Description',
+          value: transaction.description
+        },
+        {
+          name: 'date',
+          type: 'date' as const,
+          value: transactionDate
+        },
+        {
+          name: 'notes',
+          type: 'textarea' as const,
+          placeholder: 'Notes',
+          value: transaction.notes || ''
+        },
+        {
+          name: 'type',
+          type: 'radio' as const,
+          label: '💰 Credit - You received money',
+          value: 'credit',
+          checked: transaction.type === 'credit'
+        },
+        {
+          name: 'type',
+          type: 'radio' as const,
+          label: '💸 Debit - You gave money',
+          value: 'debit',
+          checked: transaction.type === 'debit'
+        }
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Update Transaction',
+          handler: async (data) => {
+            if (data.amount && data.description && data.type) {
+              const updatedDate = data.date ? new Date(data.date) : transaction.date;
+              await this.gmbTransactionService.updateTransaction(transaction.id, {
+                amount: parseFloat(data.amount),
+                description: data.description,
+                notes: data.notes || '',
+                type: data.type,
+                date: updatedDate
+              });
+              
+              const successAlert = await this.alertController.create({
+                header: 'Success',
+                message: 'Transaction updated successfully!',
+                buttons: ['OK']
+              });
+              await successAlert.present();
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async deleteTransaction(transaction: Transaction) {
+    const alert = await this.alertController.create({
+      header: 'Delete Transaction',
+      message: 'Delete this transaction?',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete',
+          handler: async () => {
+            await this.gmbTransactionService.deleteTransaction(transaction.id);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  addCreditTransaction() {
+    this.router.navigate(['/add-transaction'], {
+      queryParams: { vendorId: this.vendorId, type: 'credit' }
+    });
+  }
+
+  addDebitTransaction() {
+    this.router.navigate(['/add-transaction'], {
+      queryParams: { vendorId: this.vendorId, type: 'debit' }
+    });
+  }
+
+  async showQuickTransactionForm(type: 'credit' | 'debit') {
+    const today = new Date().toISOString().split('T')[0];
+    const typeLabel = type === 'credit' ? 'Credit (You received)' : 'Debit (You gave)';
+    
+    const alert = await this.alertController.create({
+      header: `${typeLabel} - ${this.vendor?.name}`,
+      inputs: [
+        {
+          name: 'amount',
+          type: 'number' as const,
+          placeholder: 'Amount (₹)',
+          attributes: { min: 0.01, step: 0.01 }
+        },
+        {
+          name: 'description',
+          type: 'text' as const,
+          placeholder: 'Description'
+        },
+        {
+          name: 'date',
+          type: 'date' as const,
+          value: today
+        },
+        {
+          name: 'notes',
+          type: 'textarea' as const,
+          placeholder: 'Notes (optional)'
+        }
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Add',
+          handler: async (data) => {
+            if (data.amount && data.description) {
+              const transactionDate = data.date ? new Date(data.date) : new Date();
+              const transaction = new Transaction(
+                this.gmbTransactionService.generateId(),
+                this.vendorId,
+                type,
+                parseFloat(data.amount),
+                data.description,
+                data.notes || '',
+                transactionDate
               );
               await this.gmbTransactionService.addTransaction(transaction);
               return true;
@@ -107,64 +287,15 @@ export class VendorDetailPage implements OnInit {
     await alert.present();
   }
 
-  getTransactionColor(type: string): string {
-    return type === 'debit' ? 'danger' : 'success';
+  getBalanceClass(balance: number): string {
+    if (balance > 0) return 'positive';
+    if (balance < 0) return 'negative';
+    return 'zero';
   }
 
-  getBalanceClass(): string {
-    if (!this.vendor) return '';
-    if (this.vendor.balance > 0) return 'text-danger';
-    if (this.vendor.balance < 0) return 'text-success';
-    return 'text-medium';
-  }
-
-  getBalanceText(): string {
-    if (!this.vendor) return 'Settled';
-    if (this.vendor.balance > 0) return 'You owe';
-    if (this.vendor.balance < 0) return 'Owes you';
+  getBalanceStatus(balance: number): string {
+    if (balance > 0) return 'You owe';
+    if (balance < 0) return 'They owe';
     return 'Settled';
-  }
-
-  async generateReport() {
-    if (!this.vendorReport) return;
-
-    const reportHtml = `
-    <div style="font-family: 'Roboto', sans-serif; background-color: #f5f5f5; padding: 20px;">
-      <div style="background: #ffffff; margin: 20px auto; padding: 24px; max-width: 800px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-        <h2 style="color: #6200ea; text-align: center; font-weight: 500; margin-top: 0;">Vendor Credit/Debit Summary</h2>
-        <div style="font-size: 1.1em; color: #03dac6; margin-bottom: 8px;">Vendor: ${this.vendor?.name}</div>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-          <thead>
-            <tr>
-              <th style="background-color: #e0e0e0; color: #616161; padding: 12px; text-align: left; font-weight: 500;">Date</th>
-              <th style="background-color: #e0e0e0; color: #616161; padding: 12px; text-align: left; font-weight: 500;">Type</th>
-              <th style="background-color: #e0e0e0; color: #616161; padding: 12px; text-align: left; font-weight: 500;">Amount (₹)</th>
-              <th style="background-color: #e0e0e0; color: #616161; padding: 12px; text-align: left; font-weight: 500;">Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${this.transactions.map(t => `
-              <tr>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">${new Date(t.date).toLocaleDateString()}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">${t.type.charAt(0).toUpperCase() + t.type.slice(1)}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">₹${t.amount}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #ddd;">${t.notes || t.description}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-        <div style="margin-top: 8px; text-align: right; font-weight: bold; color: #424242;">Balance: ₹${Math.abs(this.vendor?.balance || 0)}</div>
-        <div style="margin-top: 10px; font-size: 0.9em; color: #757575;">Contact: ${this.vendor?.contact} | Address: ${this.vendor?.address}</div>
-      </div>
-    </div>
-    `;
-
-    const alert = await this.alertController.create({
-      header: '',
-      message: reportHtml,
-      buttons: ['Close'],
-      cssClass: 'report-alert'
-    });
-    await alert.present();
   }
 }

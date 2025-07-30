@@ -1,50 +1,40 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>Sweet Shop Inventory</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="6">
-        <ion-card button (click)="goTo('inventory')">
-          <ion-card-content>
-            <ion-icon name="cube-outline" size="large"></ion-icon>
-            <h2>Inventory</h2>
-            <p>Manage Items</p>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col size="6">
-        <ion-card button (click)="goTo('vendors')">
-          <ion-card-content>
-            <ion-icon name="people-outline" size="large"></ion-icon>
-            <h2>Vendors</h2>
-            <p>Manage Suppliers</p>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="6">
-        <ion-card button (click)="goTo('transactions')">
-          <ion-card-content>
-            <ion-icon name="card-outline" size="large"></ion-icon>
-            <h2>Transactions</h2>
-            <p>Daily Deals</p>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col size="6">
-        <ion-card button (click)="goTo('reports')">
-          <ion-card-content>
-            <ion-icon name="bar-chart-outline" size="large"></ion-icon>
-            <h2>Reports</h2>
-            <p>View Analytics</p>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content class="home-content">
+  <div class="welcome-section">
+    <h1>Welcome to Your Shop</h1>
+    <p>Manage vendors and track transactions easily</p>
+  </div>
+
+  <div class="tiles-grid">
+    <ion-card class="feature-tile vendors-tile" (click)="goToVendors()">
+      <ion-card-content>
+        <div class="tile-icon">
+          <ion-icon name="storefront"></ion-icon>
+        </div>
+        <h2>Vendors</h2>
+        <p>Manage your suppliers</p>
+        <div class="tile-arrow">
+          <ion-icon name="chevron-forward"></ion-icon>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="feature-tile transactions-tile" (click)="goToTransactions()">
+      <ion-card-content>
+        <div class="tile-icon">
+          <ion-icon name="receipt"></ion-icon>
+        </div>
+        <h2>Transactions</h2>
+        <p>Track payments & credits</p>
+        <div class="tile-arrow">
+          <ion-icon name="chevron-forward"></ion-icon>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

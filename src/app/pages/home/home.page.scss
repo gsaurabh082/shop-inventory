@@ -1,0 +1,86 @@
+.home-content {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.welcome-section {
+  text-align: center;
+  padding: 40px 20px 20px;
+  color: white;
+}
+
+.welcome-section h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.welcome-section p {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.tiles-grid {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.feature-tile {
+  margin: 0;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.feature-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.vendors-tile {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.transactions-tile {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.feature-tile ion-card-content {
+  padding: 24px;
+  color: white;
+  position: relative;
+}
+
+.tile-icon {
+  margin-bottom: 16px;
+}
+
+.tile-icon ion-icon {
+  font-size: 48px;
+  opacity: 0.9;
+}
+
+.feature-tile h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.feature-tile p {
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.tile-arrow {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
+.tile-arrow ion-icon {
+  font-size: 24px;
+  opacity: 0.7;
+}

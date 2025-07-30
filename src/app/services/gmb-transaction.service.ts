@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Vendor, Transaction, VendorReport } from '../models/inventory.model';
+import { Vendor, Transaction } from '../models/inventory.model';
 
 @Injectable({
   providedIn: 'root'
@@ -36,82 +36,75 @@ export class GMBTransactionService {
   }
 
   async addVendor(vendor: Vendor) {
-    const vendors = this.vendorsSubject.value;
-    vendors.push(vendor);
+    const vendors = [...this.vendorsSubject.value, vendor];
     await this.storage.set('vendors', vendors);
     this.vendorsSubject.next(vendors);
   }
 
+  async updateVendor(vendorId: string, updates: any) {
+    const vendors = this.vendorsSubject.value.map(v => 
+      v.id === vendorId ? { ...v, ...updates } : v
+    );
+    await this.storage.set('vendors', vendors);
+    this.vendorsSubject.next(vendors);
+  }
+
+  async deleteVendor(vendorId: string) {
+    const vendors = this.vendorsSubject.value.filter(v => v.id !== vendorId);
+    const transactions = this.transactionsSubject.value.filter(t => t.vendorId !== vendorId);
+    
+    await this.storage.set('vendors', vendors);
+    await this.storage.set('transactions', transactions);
+    
+    this.vendorsSubject.next(vendors);
+    this.transactionsSubject.next(transactions);
+  }
+
   async addTransaction(transaction: Transaction) {
-    const transactions = [...this.transactionsSubject.value];
-    transactions.push(transaction);
+    const transactions = [...this.transactionsSubject.value, transaction];
     await this.storage.set('transactions', transactions);
     this.transactionsSubject.next(transactions);
     await this.updateVendorBalance(transaction.vendorId);
   }
 
-  private async updateVendorBalance(vendorId: string) {
-    const vendors = [...this.vendorsSubject.value];
-    const vendor = vendors.find(v => v.id === vendorId);
-    if (vendor) {
-      const vendorTransactions = this.transactionsSubject.value.filter(t => t.vendorId === vendorId);
-      const totalCredit = vendorTransactions.filter(t => t.type === 'credit').reduce((sum, t) => sum + t.amount, 0);
-      const totalDebit = vendorTransactions.filter(t => t.type === 'debit').reduce((sum, t) => sum + t.amount, 0);
-      vendor.balance = totalDebit - totalCredit;
-      
-      await this.storage.set('vendors', vendors);
-      this.vendorsSubject.next(vendors);
-    }
-  }
-
-  getVendorTransactions(vendorId: string): Transaction[] {
-    return this.transactionsSubject.value.filter(t => t.vendorId === vendorId);
-  }
-
-  getVendorReport(vendorId: string): VendorReport | null {
-    const vendor = this.vendorsSubject.value.find(v => v.id === vendorId);
-    if (!vendor) return null;
-    
-    const transactions = this.getVendorTransactions(vendorId);
-    return new VendorReport(vendorId, vendor.name, transactions);
-  }
-
-  getMonthlyReport(month: string): { vendors: VendorReport[]; totalDebit: number; totalCredit: number; totalBalance: number } {
-    const startDate = new Date(month + '-01');
-    const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
-    
-    const monthTransactions = this.transactionsSubject.value.filter(t => {
-      const transactionDate = new Date(t.date);
-      return transactionDate >= startDate && transactionDate <= endDate;
-    });
-
-    const vendorReports = this.vendorsSubject.value.map(vendor => {
-      const vendorTransactions = monthTransactions.filter(t => t.vendorId === vendor.id);
-      return new VendorReport(vendor.id, vendor.name, vendorTransactions);
-    }).filter(report => report.transactionCount > 0);
-
-    return {
-      vendors: vendorReports,
-      totalDebit: vendorReports.reduce((sum, r) => sum + r.totalDebit, 0),
-      totalCredit: vendorReports.reduce((sum, r) => sum + r.totalCredit, 0),
-      totalBalance: vendorReports.reduce((sum, r) => sum + r.balance, 0)
-    };
-  }
-
-  async updateTransaction(transactionId: string, updatedData: any) {
-    const transactions = this.transactionsSubject.value.map(t => {
-      if (t.id === transactionId) {
-        return { ...t, ...updatedData };
-      }
-      return t;
-    });
-    
+  async updateTransaction(transactionId: string, updates: any) {
+    const transactions = this.transactionsSubject.value.map(t => 
+      t.id === transactionId ? { ...t, ...updates } : t
+    );
     await this.storage.set('transactions', transactions);
     this.transactionsSubject.next(transactions);
     
     const transaction = transactions.find(t => t.id === transactionId);
     if (transaction) {
       await this.updateVendorBalance(transaction.vendorId);
+    }
+  }
+
+  async deleteTransaction(transactionId: string) {
+    const transaction = this.transactionsSubject.value.find(t => t.id === transactionId);
+    const transactions = this.transactionsSubject.value.filter(t => t.id !== transactionId);
+    
+    await this.storage.set('transactions', transactions);
+    this.transactionsSubject.next(transactions);
+    
+    if (transaction) {
+      await this.updateVendorBalance(transaction.vendorId);
+    }
+  }
+
+  private async updateVendorBalance(vendorId: string) {
+    const vendors = [...this.vendorsSubject.value];
+    const vendor = vendors.find(v => v.id === vendorId);
+    
+    if (vendor) {
+      const vendorTransactions = this.transactionsSubject.value.filter(t => t.vendorId === vendorId);
+      const totalCredit = vendorTransactions.filter(t => t.type === 'credit').reduce((sum, t) => sum + t.amount, 0);
+      const totalDebit = vendorTransactions.filter(t => t.type === 'debit').reduce((sum, t) => sum + t.amount, 0);
+      
+      vendor.balance = totalDebit - totalCredit;
+      
+      await this.storage.set('vendors', vendors);
+      this.vendorsSubject.next(vendors);
     }
   }
 

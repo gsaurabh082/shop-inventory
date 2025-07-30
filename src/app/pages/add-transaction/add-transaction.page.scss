@@ -1,0 +1,160 @@
+.add-transaction-content {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.form-header {
+  text-align: center;
+  padding: 24px 20px;
+  color: white;
+}
+
+.form-header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.form-header p {
+  font-size: 16px;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.type-selection {
+  padding: 0 20px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.type-card {
+  margin: 0;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.type-card.selected {
+  border-color: white;
+  transform: scale(1.02);
+}
+
+.type-card ion-card-content {
+  padding: 20px;
+  text-align: center;
+  color: white;
+}
+
+.type-card:first-child {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.type-card:last-child {
+  background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+}
+
+.type-icon {
+  margin-bottom: 12px;
+}
+
+.type-icon ion-icon {
+  font-size: 32px;
+}
+
+.type-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.type-card p {
+  font-size: 12px;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.form-section {
+  background: #f8f9fa;
+  border-radius: 20px 20px 0 0;
+  min-height: 60vh;
+  padding: 20px;
+}
+
+.form-card {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.form-card ion-item {
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 16px;
+}
+
+.form-card ion-label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.form-card ion-input,
+.form-card ion-select,
+.form-card ion-textarea {
+  --background: #f8f9fa;
+  --border-radius: 8px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.vendor-preview {
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preview-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.current-balance {
+  text-align: right;
+}
+
+.current-balance span:first-child {
+  display: block;
+  font-size: 12px;
+  color: #6c757d;
+  margin-bottom: 2px;
+}
+
+.current-balance .balance {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.submit-button {
+  --border-radius: 12px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+.submit-button:disabled {
+  opacity: 0.5;
+}

@@ -1,9 +1,174 @@
-.main-content {
-  --background: #f5f5f5;
+.vendors-content {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.modern-search {
-  --background: #f8f9fa;
+.vendors-header {
+  padding: 24px 20px 16px;
+  background: transparent;
+  color: white;
+}
+
+.vendors-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 4px 0;
+}
+
+.vendors-header p {
+  color: rgba(255,255,255,0.9);
+  margin: 0;
+  font-size: 14px;
+}
+
+.vendors-list {
+  padding: 16px;
+}
+
+.vendor-card {
+  margin-bottom: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  background: white;
+}
+
+.vendor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.vendor-card ion-card-content {
+  padding: 16px;
+}
+
+.vendor-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.vendor-details h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 4px 0;
+}
+
+.vendor-details .contact {
+  color: #6c757d;
+  font-size: 14px;
+  margin: 0 0 2px 0;
+}
+
+.vendor-details .address {
+  color: #6c757d;
+  font-size: 12px;
+  margin: 0;
+}
+
+.vendor-balance {
+  text-align: right;
+}
+
+.balance-amount {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.balance-amount.positive {
+  color: #dc3545;
+}
+
+.balance-amount.negative {
+  color: #28a745;
+}
+
+.balance-amount.zero {
+  color: #6c757d;
+}
+
+.balance-status {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.vendor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #e9ecef;
+  padding-top: 12px;
+}
+
+.vendor-actions ion-button {
+  --border-radius: 8px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --color: white;
+  font-weight: 500;
+}
+
+.vendor-actions ion-button:first-child {
+  --background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --background-hover: linear-gradient(135deg, #3d8bfe 0%, #00d4fe 100%);
+}
+
+.vendor-actions ion-button:last-child {
+  --background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  --background-hover: linear-gradient(135deg, #ff5252 0%, #d32f2f 100%);
+}
+
+.vendor-actions ion-button ion-icon {
+  font-size: 18px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(255,255,255,0.95);
+  margin: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.empty-state ion-icon {
+  font-size: 64px;
+  color: #667eea;
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-size: 20px;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+}
+
+.empty-state p {
+  margin: 0 0 24px 0;
+  color: #6c757d;
+}
+
+.empty-state ion-button {
+  --background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --color: white;
   --border-radius: 12px;
-  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+}
+
+ion-fab-button {
+  --background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+}
+
+ion-toolbar ion-buttons[slot="end"] ion-button {
+  --color: white;
+}
+
+ion-toolbar ion-buttons[slot="end"] ion-button ion-icon {
+  color: white;
+  font-size: 24px;
 }

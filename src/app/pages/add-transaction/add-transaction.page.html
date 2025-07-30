@@ -4,36 +4,100 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>Add Transaction</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/home" fill="clear">
+        <ion-icon name="home" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <form (ngSubmit)="addTransaction()">
-    <ion-item>
-      <ion-label position="stacked">Amount *</ion-label>
-      <ion-input type="number" [(ngModel)]="amount" name="amount" required></ion-input>
-    </ion-item>
-    
-    <ion-item>
-      <ion-label position="stacked">Description *</ion-label>
-      <ion-input [(ngModel)]="description" name="description" required></ion-input>
-    </ion-item>
-    
-    <ion-item>
-      <ion-label position="stacked">Notes</ion-label>
-      <ion-textarea [(ngModel)]="notes" name="notes"></ion-textarea>
-    </ion-item>
-    
-    <ion-item>
-      <ion-label position="stacked">Transaction Type *</ion-label>
-      <ion-select [(ngModel)]="type" name="type" placeholder="Select type">
-        <ion-select-option value="debit">Debit (You gave)</ion-select-option>
-        <ion-select-option value="credit">Credit (You received)</ion-select-option>
-      </ion-select>
-    </ion-item>
-    
-    <ion-button expand="block" type="submit" [disabled]="!amount || !description || !type">
-      Add Transaction
+<ion-content class="add-transaction-content">
+  <div class="form-header">
+    <h1>New Transaction</h1>
+    <p>Record a payment or receipt</p>
+  </div>
+
+  <!-- Transaction Type Selection -->
+  <div class="type-selection">
+    <ion-card class="type-card" [class.selected]="transactionType === 'credit'" (click)="transactionType = 'credit'">
+      <ion-card-content>
+        <div class="type-icon credit">
+          <ion-icon name="arrow-down-circle"></ion-icon>
+        </div>
+        <h3>Credit</h3>
+        <p>You received money</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="type-card" [class.selected]="transactionType === 'debit'" (click)="transactionType = 'debit'">
+      <ion-card-content>
+        <div class="type-icon debit">
+          <ion-icon name="arrow-up-circle"></ion-icon>
+        </div>
+        <h3>Debit</h3>
+        <p>You gave money</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section">
+    <ion-card class="form-card">
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-label position="stacked">Vendor *</ion-label>
+          <ion-select [(ngModel)]="selectedVendorId" placeholder="Select vendor">
+            <ion-select-option *ngFor="let vendor of vendors" [value]="vendor.id">
+              {{vendor.name}}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-label position="stacked">Amount (₹) *</ion-label>
+          <ion-input type="number" [(ngModel)]="amount" placeholder="0.00" min="0.01" step="0.01"></ion-input>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-label position="stacked">Description *</ion-label>
+          <ion-input [(ngModel)]="description" placeholder="Payment for goods"></ion-input>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-label position="stacked">Date *</ion-label>
+          <ion-input type="date" [(ngModel)]="transactionDate"></ion-input>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-label position="stacked">Notes</ion-label>
+          <ion-textarea [(ngModel)]="notes" placeholder="Additional notes (optional)" rows="3"></ion-textarea>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Vendor Preview -->
+    <ion-card class="vendor-preview" *ngIf="getSelectedVendor()">
+      <ion-card-content>
+        <div class="preview-header">
+          <h3>{{getSelectedVendor()?.name}}</h3>
+          <div class="current-balance">
+            <span>Current Balance</span>
+            <span class="balance">₹{{getSelectedVendor()?.balance | number:'1.0-0'}}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Submit Button -->
+    <ion-button 
+      expand="block" 
+      size="large" 
+      (click)="addTransaction()" 
+      [disabled]="!selectedVendorId || !amount || !description"
+      class="submit-button">
+      <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+      Add {{transactionType | titlecase}} Transaction
     </ion-button>
-  </form>
+  </div>
 </ion-content>
