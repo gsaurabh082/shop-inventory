@@ -5,8 +5,8 @@
     </ion-buttons>
     <ion-title>Add Transaction</ion-title>
     <ion-buttons slot="end">
-      <ion-button routerLink="/home" fill="clear">
-        <ion-icon name="home" slot="icon-only"></ion-icon>
+      <ion-button routerLink="/home" fill="outline" color="light" size="small">
+        Home
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -47,7 +47,7 @@
       <ion-card-content>
         <ion-item lines="none">
           <ion-label position="stacked">Vendor *</ion-label>
-          <ion-select [(ngModel)]="selectedVendorId" placeholder="Select vendor">
+          <ion-select [(ngModel)]="selectedVendorId" placeholder="Select vendor" interface="popover">
             <ion-select-option *ngFor="let vendor of vendors" [value]="vendor.id">
               {{vendor.name}}
             </ion-select-option>

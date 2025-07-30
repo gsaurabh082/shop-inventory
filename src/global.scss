@@ -82,6 +82,8 @@ ion-button {
   font-weight: 500;
 }
 
+
+
 /* Toolbar Improvements */
 ion-toolbar {
   --padding-start: 16px;
@@ -90,4 +92,100 @@ ion-toolbar {
 
 ion-title {
   font-weight: 600;
+}
+
+/* Toolbar Button Fixes - Clean Approach */
+ion-header ion-toolbar[color="primary"] ion-button {
+  --color: white;
+}
+
+ion-header ion-toolbar[color="primary"] ion-button ion-icon {
+  color: white !important;
+  font-size: 24px !important;
+}
+
+/* Select Popover Fixes */
+ion-popover {
+  --background: white !important;
+}
+
+ion-popover ion-content {
+  --background: white !important;
+  --color: #2c3e50 !important;
+}
+
+ion-popover ion-item {
+  --color: #2c3e50 !important;
+  --background: white !important;
+}
+
+ion-popover ion-radio {
+  --color: #3880ff !important;
+  --color-checked: #3880ff !important;
+}
+
+ion-popover ion-label {
+  color: #2c3e50 !important;
+}
+
+ion-popover ion-list {
+  background: white !important;
+}
+
+ion-popover .popover-content {
+  background: white !important;
+}
+
+/* Alert Dialog Fixes */
+ion-alert {
+  --background: white !important;
+  --color: #2c3e50 !important;
+}
+
+ion-alert .alert-wrapper {
+  background: white !important;
+  color: #2c3e50 !important;
+}
+
+ion-alert .alert-head {
+  background: white !important;
+}
+
+ion-alert .alert-title {
+  color: #2c3e50 !important;
+}
+
+ion-alert .alert-sub-title,
+ion-alert .alert-message {
+  color: #2c3e50 !important;
+}
+
+ion-alert .alert-input {
+  background: white !important;
+  color: #2c3e50 !important;
+  border: 1px solid #e9ecef !important;
+}
+
+ion-alert .alert-radio-group {
+  background: white !important;
+}
+
+ion-alert .alert-radio-button {
+  background: white !important;
+}
+
+ion-alert .alert-radio-label {
+  color: #2c3e50 !important;
+}
+
+ion-alert .alert-button-group {
+  background: white !important;
+}
+
+ion-alert .alert-button {
+  color: #3880ff !important;
+}
+
+ion-alert .alert-button.alert-button-role-cancel {
+  color: #6c757d !important;
 }

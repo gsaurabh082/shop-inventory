@@ -294,8 +294,8 @@ export class VendorDetailPage implements OnInit {
   }
 
   getBalanceStatus(balance: number): string {
-    if (balance > 0) return 'You owe';
-    if (balance < 0) return 'They owe';
+    if (balance > 0) return 'They owe you';
+    if (balance < 0) return 'You owe them';
     return 'Settled';
   }
 }

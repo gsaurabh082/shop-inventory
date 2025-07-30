@@ -82,39 +82,97 @@
 }
 
 .form-card {
-  margin-bottom: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background: white;
+}
+
+.form-card ion-card-content {
+  padding: 24px;
 }
 
 .form-card ion-item {
   --padding-start: 0;
   --padding-end: 0;
   --inner-padding-end: 0;
-  margin-bottom: 16px;
+  --background: transparent;
+  margin-bottom: 20px;
 }
 
 .form-card ion-label {
   font-weight: 600;
-  color: #2c3e50;
+  color: #2c3e50 !important;
   margin-bottom: 8px;
+  font-size: 14px;
 }
 
 .form-card ion-input,
 .form-card ion-select,
 .form-card ion-textarea {
-  --background: #f8f9fa;
+  --background: white;
+  --color: #2c3e50;
+  --placeholder-color: #6c757d;
   --border-radius: 8px;
-  --padding-start: 12px;
-  --padding-end: 12px;
-  border: 1px solid #e9ecef;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  border: 2px solid #e9ecef;
   border-radius: 8px;
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.form-card ion-input:focus,
+.form-card ion-select:focus,
+.form-card ion-textarea:focus {
+  border-color: #3880ff;
+  box-shadow: 0 0 0 3px rgba(56, 128, 255, 0.1);
+}
+
+.form-card ion-select {
+  --placeholder-color: #6c757d;
+  --color: #2c3e50;
+}
+
+.form-card ion-select::part(text) {
+  color: #2c3e50 !important;
+}
+
+.form-card ion-select::part(icon) {
+  color: #6c757d !important;
+}
+
+/* Fix for select popover */
+ion-select-popover ion-item {
+  --color: #2c3e50;
+  --background: white;
+}
+
+ion-select-popover ion-radio {
+  --color: #3880ff;
+  --color-checked: #3880ff;
+}
+
+ion-select-popover ion-label {
+  color: #2c3e50 !important;
+}
+
+.form-card ion-textarea {
+  min-height: 80px;
 }
 
 .vendor-preview {
   margin-bottom: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background: white;
+  border: 1px solid #e9ecef;
+}
+
+.vendor-preview ion-card-content {
+  padding: 20px;
 }
 
 .preview-header {
@@ -151,10 +209,15 @@
   --border-radius: 12px;
   --padding-top: 16px;
   --padding-bottom: 16px;
+  --color: white;
+  --background: #3880ff;
   font-weight: 600;
-  margin-top: 20px;
+  font-size: 16px;
+  margin-top: 24px;
+  height: 56px;
 }
 
 .submit-button:disabled {
-  opacity: 0.5;
+  --background: #6c757d;
+  opacity: 0.7;
 }
