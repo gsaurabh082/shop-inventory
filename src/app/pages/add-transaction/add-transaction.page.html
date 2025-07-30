@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add Transaction</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="addTransaction()">
+    <ion-item>
+      <ion-label position="stacked">Amount *</ion-label>
+      <ion-input type="number" [(ngModel)]="amount" name="amount" required></ion-input>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label position="stacked">Description *</ion-label>
+      <ion-input [(ngModel)]="description" name="description" required></ion-input>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label position="stacked">Notes</ion-label>
+      <ion-textarea [(ngModel)]="notes" name="notes"></ion-textarea>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label position="stacked">Transaction Type *</ion-label>
+      <ion-select [(ngModel)]="type" name="type" placeholder="Select type">
+        <ion-select-option value="debit">Debit (You gave)</ion-select-option>
+        <ion-select-option value="credit">Credit (You received)</ion-select-option>
+      </ion-select>
+    </ion-item>
+    
+    <ion-button expand="block" type="submit" [disabled]="!amount || !description || !type">
+      Add Transaction
+    </ion-button>
+  </form>
+</ion-content>

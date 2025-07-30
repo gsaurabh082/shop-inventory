@@ -1,0 +1,157 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary" class="custom-header">
+    <ion-title class="header-title">
+      <div class="shop-branding">
+        <div class="logo-circle">🧾</div>
+        <div class="shop-info">
+          <h1>Daily Transactions</h1>
+          <p>Track sales & purchases</p>
+        </div>
+      </div>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="refreshData()">
+        <ion-icon name="refresh" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="main-content">
+  <!-- Quick Stats -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <ion-icon name="trending-up-outline"></ion-icon>
+      <span>₹{{todaySales}}</span>
+    </div>
+    <div class="stat-item">
+      <ion-icon name="trending-down-outline"></ion-icon>
+      <span>₹{{todayPurchases}}</span>
+    </div>
+    <div class="stat-item">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <span>{{totalTransactions}}</span>
+    </div>
+    <div class="stat-item">
+      <ion-icon name="cash-outline"></ion-icon>
+      <span>₹{{netAmount}}</span>
+    </div>
+  </div>
+
+  <!-- Main Action Cards -->
+  <div class="action-grid">
+    <div class="action-card primary" (click)="recordSale()">
+      <div class="card-icon">
+        <ion-icon name="trending-up"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Record Sale</h3>
+        <p>Add new sales transaction</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+
+    <div class="action-card success" (click)="recordPurchase()">
+      <div class="card-icon">
+        <ion-icon name="trending-down"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Record Purchase</h3>
+        <p>Add purchase from vendor</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+
+    <div class="action-card warning" (click)="recordCredit()">
+      <div class="card-icon">
+        <ion-icon name="card"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Credit Transaction</h3>
+        <p>Record credit given/received</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+
+    <div class="action-card danger" (click)="recordPayment()">
+      <div class="card-icon">
+        <ion-icon name="cash"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Payment</h3>
+        <p>Record payment made/received</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transaction Stats -->
+  <div class="stats-grid">
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="trending-up" color="success"></ion-icon>
+          <h3>Today's Sales</h3>
+        </div>
+        <div class="stat-value">₹{{todaySales}}</div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="trending-down" color="primary"></ion-icon>
+          <h3>Purchases</h3>
+        </div>
+        <div class="stat-value">₹{{todayPurchases}}</div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="card" color="warning"></ion-icon>
+          <h3>Credit Given</h3>
+        </div>
+        <div class="stat-value">₹{{creditGiven}}</div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="cash" color="secondary"></ion-icon>
+          <h3>Payments</h3>
+        </div>
+        <div class="stat-value">₹{{paymentsReceived}}</div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Recent Transactions -->
+  <ion-card class="modern-card">
+    <ion-card-header>
+      <ion-card-title>📊 Recent Transactions</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="no-data">
+        <ion-icon name="receipt-outline"></ion-icon>
+        <p>No transactions recorded today. Start by recording your first transaction!</p>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="showTransactionOptions()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{vendor?.name}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addTransaction()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="vendor">
+    <ion-card>
+      <ion-card-content>
+        <div class="vendor-info">
+          <ion-avatar>
+            <ion-icon name="person-circle-outline" size="large" color="primary"></ion-icon>
+          </ion-avatar>
+          <div class="info">
+            <h2>{{vendor.name}}</h2>
+            <p><ion-icon name="call-outline"></ion-icon> {{vendor.contact || 'No contact'}}</p>
+            <p><ion-icon name="location-outline"></ion-icon> {{vendor.address || 'No address'}}</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Balance Summary</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="balance-grid">
+          <div class="balance-item">
+            <h3>₹{{vendorReport?.totalDebit || 0}}</h3>
+            <p>Total Debit</p>
+          </div>
+          <div class="balance-item">
+            <h3>₹{{vendorReport?.totalCredit || 0}}</h3>
+            <p>Total Credit</p>
+          </div>
+          <div class="balance-item">
+            <h3 [class]="getBalanceClass()">₹{{Math.abs(vendor.balance)}}</h3>
+            <p>{{getBalanceText()}}</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Recent Transactions</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list *ngIf="transactions.length > 0; else noTransactions">
+          <ion-item *ngFor="let transaction of transactions">
+            <ion-label>
+              <h3>{{transaction.description}}</h3>
+              <p *ngIf="transaction.notes">{{transaction.notes}}</p>
+              <p><small>{{transaction.date | date:'dd/MM/yyyy HH:mm'}}</small></p>
+            </ion-label>
+            <div slot="end">
+              <ion-chip [color]="getTransactionColor(transaction.type)">
+                {{transaction.type | uppercase}} ₹{{transaction.amount}}
+              </ion-chip>
+            </div>
+          </ion-item>
+        </ion-list>
+        <ng-template #noTransactions>
+          <p class="no-data">No transactions yet</p>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button expand="block" fill="outline" (click)="generateReport()">
+      <ion-icon name="document-text-outline" slot="start"></ion-icon>
+      Generate Report
+    </ion-button>
+  </div>
+</ion-content>

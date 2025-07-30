@@ -1,0 +1,199 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary" class="custom-header">
+    <ion-title class="header-title">
+      <div class="shop-branding">
+        <div class="logo-circle">GMB</div>
+        <div class="shop-info">
+          <h1>GMB Transaction</h1>
+          <p>Manage your transactions efficiently</p>
+        </div>
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="main-content">
+  <!-- Quick Stats -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <ion-icon name="cube-outline"></ion-icon>
+      <span>{{totalItems}} Items</span>
+    </div>
+    <div class="stat-item">
+      <ion-icon name="people-outline"></ion-icon>
+      <span>{{totalVendors}} Vendors</span>
+    </div>
+    <div class="stat-item">
+      <ion-icon name="cash-outline"></ion-icon>
+      <span>₹{{totalBalance}}</span>
+    </div>
+    <div class="stat-item">
+      <ion-icon name="time-outline"></ion-icon>
+      <span>{{getCurrentTime()}}</span>
+    </div>
+  </div>
+
+  <!-- Main Action Cards -->
+  <div class="action-grid">
+    <div class="action-card primary" (click)="navigateToInventory()">
+      <div class="card-icon">
+        <ion-icon name="cube"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Manage Inventory</h3>
+        <p>Track stock levels & items</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+
+    <div class="action-card success" (click)="navigateToVendors()">
+      <div class="card-icon">
+        <ion-icon name="people"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Vendor Management</h3>
+        <p>Manage supplier relationships</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+
+    <div class="action-card warning" (click)="navigateToTransactions()">
+      <div class="card-icon">
+        <ion-icon name="receipt"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Daily Transactions</h3>
+        <p>Record sales & purchases</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+
+    <div class="action-card danger" (click)="navigateToReports()">
+      <div class="card-icon">
+        <ion-icon name="analytics"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Reports & Analytics</h3>
+        <p>View summaries & insights</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Stats -->
+  <div class="stats-grid">
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="cube" color="primary"></ion-icon>
+          <h3>Total Items</h3>
+        </div>
+        <div class="stat-value">{{totalItems}}</div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="people" color="success"></ion-icon>
+          <h3>Vendors</h3>
+        </div>
+        <div class="stat-value">{{totalVendors}}</div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="receipt" color="warning"></ion-icon>
+          <h3>Today's Transactions</h3>
+        </div>
+        <div class="stat-value">{{todayTransactions}}</div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="cash" color="secondary"></ion-icon>
+          <h3>Monthly Total</h3>
+        </div>
+        <div class="stat-value">₹{{monthlyTotal}}</div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Recent Activity -->
+  <ion-card class="modern-card">
+    <ion-card-header>
+      <ion-card-title>📊 Recent Activity</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngIf="recentTransactions.length > 0; else noTransactions">
+        <ion-item *ngFor="let transaction of recentTransactions">
+          <ion-label>
+            <h3>{{getVendorName(transaction.vendorId)}}</h3>
+            <p>{{transaction.description}}</p>
+            <p><small>{{transaction.date | date:'dd/MM/yyyy HH:mm'}}</small></p>
+          </ion-label>
+          <div slot="end">
+            <ion-chip [color]="getTransactionColor(transaction.type)">
+              {{transaction.type | uppercase}} ₹{{transaction.amount}}
+            </ion-chip>
+          </div>
+        </ion-item>
+      </ion-list>
+      <ng-template #noTransactions>
+        <div class="no-data">
+          <ion-icon name="receipt-outline"></ion-icon>
+          <p>No transactions yet. Start by adding vendors and recording transactions!</p>
+        </div>
+      </ng-template>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Top Vendors -->
+  <ion-card class="modern-card">
+    <ion-card-header>
+      <ion-card-title>🏪 Top Vendors by Balance</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngIf="topVendors.length > 0; else noVendors">
+        <ion-item *ngFor="let vendor of topVendors" button (click)="navigateToVendor(vendor.id)">
+          <ion-avatar slot="start">
+            <ion-icon name="person-circle-outline" size="large" color="primary"></ion-icon>
+          </ion-avatar>
+          <ion-label>
+            <h3>{{vendor.name}}</h3>
+            <p>{{vendor.contact}}</p>
+          </ion-label>
+          <div slot="end">
+            <ion-chip [color]="vendor.balance > 0 ? 'danger' : 'success'">
+              ₹{{Math.abs(vendor.balance)}}
+            </ion-chip>
+          </div>
+        </ion-item>
+      </ion-list>
+      <ng-template #noVendors>
+        <div class="no-data">
+          <ion-icon name="people-outline"></ion-icon>
+          <p>No vendors added yet. Start by adding your suppliers!</p>
+        </div>
+      </ng-template>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="showAddOptions()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

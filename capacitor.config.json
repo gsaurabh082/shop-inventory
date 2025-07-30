@@ -1,0 +1,19 @@
+{
+  "appId": "com.sweetshop.inventory",
+  "appName": "Sweet Shop Inventory",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#3880ff",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP"
+    },
+    "StatusBar": {
+      "style": "DARK"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "sweet-shop-inventory",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "sweet-shop-inventory"
+}

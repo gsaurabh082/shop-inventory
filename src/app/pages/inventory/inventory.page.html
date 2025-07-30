@@ -1,0 +1,157 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary" class="custom-header">
+    <ion-title class="header-title">
+      <div class="shop-branding">
+        <div class="logo-circle">📦</div>
+        <div class="shop-info">
+          <h1>Inventory Management</h1>
+          <p>Track your stock levels</p>
+        </div>
+      </div>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="refreshData()">
+        <ion-icon name="refresh" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="main-content">
+  <!-- Quick Stats -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <ion-icon name="cube-outline"></ion-icon>
+      <span>{{totalItems}} Items</span>
+    </div>
+    <div class="stat-item">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      <span>{{inStockItems}} In Stock</span>
+    </div>
+    <div class="stat-item">
+      <ion-icon name="warning-outline"></ion-icon>
+      <span>{{lowStockItems}} Low Stock</span>
+    </div>
+    <div class="stat-item">
+      <ion-icon name="close-circle-outline"></ion-icon>
+      <span>{{outOfStockItems}} Out</span>
+    </div>
+  </div>
+
+  <!-- Main Action Cards -->
+  <div class="action-grid">
+    <div class="action-card primary" (click)="addNewItem()">
+      <div class="card-icon">
+        <ion-icon name="add-circle"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Add New Item</h3>
+        <p>Add items to inventory</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+
+    <div class="action-card success" (click)="updateStock()">
+      <div class="card-icon">
+        <ion-icon name="refresh-circle"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Update Stock</h3>
+        <p>Modify stock levels</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+
+    <div class="action-card warning" (click)="viewLowStock()">
+      <div class="card-icon">
+        <ion-icon name="warning"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Low Stock Alert</h3>
+        <p>Items running low</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+
+    <div class="action-card danger" (click)="viewCategories()">
+      <div class="card-icon">
+        <ion-icon name="grid"></ion-icon>
+      </div>
+      <div class="card-content">
+        <h3>Categories</h3>
+        <p>Organize by category</p>
+      </div>
+      <div class="card-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Stats -->
+  <div class="stats-grid">
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="restaurant" color="primary"></ion-icon>
+          <h3>Sugar Items</h3>
+        </div>
+        <div class="stat-value">25</div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="nutrition" color="success"></ion-icon>
+          <h3>Khowa Items</h3>
+        </div>
+        <div class="stat-value">18</div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="leaf" color="warning"></ion-icon>
+          <h3>Vegetables</h3>
+        </div>
+        <div class="stat-value">32</div>
+      </ion-card-content>
+    </ion-card>
+    
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <div class="stat-header">
+          <ion-icon name="flame" color="danger"></ion-icon>
+          <h3>Gas & Others</h3>
+        </div>
+        <div class="stat-value">12</div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Recent Items -->
+  <ion-card class="modern-card">
+    <ion-card-header>
+      <ion-card-title>📋 Recent Items</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="no-data">
+        <ion-icon name="cube-outline"></ion-icon>
+        <p>No items added yet. Start by adding your first inventory item!</p>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addNewItem()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

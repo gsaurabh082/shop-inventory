@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+www/
+.angular/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Capacitor
+android/
+ios/
+
+# Logs
+*.log
+npm-debug.log*

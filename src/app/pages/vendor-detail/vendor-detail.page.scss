@@ -1,0 +1,37 @@
+.vendor-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.balance-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  text-align: center;
+}
+
+.balance-item h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.text-danger { color: var(--ion-color-danger); }
+.text-success { color: var(--ion-color-success); }
+.text-medium { color: var(--ion-color-medium); }
+
+.no-data {
+  text-align: center;
+  color: var(--ion-color-medium);
+  padding: 2rem;
+}
+
+.report-alert .alert-wrapper {
+  max-width: 90vw;
+  max-height: 80vh;
+}
+
+.report-alert .alert-message {
+  overflow-y: auto;
+  max-height: 60vh;
+}

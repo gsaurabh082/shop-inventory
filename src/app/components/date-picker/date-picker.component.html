@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Select Date</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-datetime
+    presentation="date"
+    [(ngModel)]="selectedDate"
+    [showDefaultButtons]="true"
+    (ionChange)="onDateChange($event)">
+  </ion-datetime>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="block" (click)="confirm()">Select</ion-button>
+  </ion-toolbar>
+</ion-footer>

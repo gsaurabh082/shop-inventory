@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Sweet Shop Inventory</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card button (click)="goTo('inventory')">
+          <ion-card-content>
+            <ion-icon name="cube-outline" size="large"></ion-icon>
+            <h2>Inventory</h2>
+            <p>Manage Items</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card button (click)="goTo('vendors')">
+          <ion-card-content>
+            <ion-icon name="people-outline" size="large"></ion-icon>
+            <h2>Vendors</h2>
+            <p>Manage Suppliers</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card button (click)="goTo('transactions')">
+          <ion-card-content>
+            <ion-icon name="card-outline" size="large"></ion-icon>
+            <h2>Transactions</h2>
+            <p>Daily Deals</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card button (click)="goTo('reports')">
+          <ion-card-content>
+            <ion-icon name="bar-chart-outline" size="large"></ion-icon>
+            <h2>Reports</h2>
+            <p>View Analytics</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
